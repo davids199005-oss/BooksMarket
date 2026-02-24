@@ -83,7 +83,7 @@ BooksMarket/
 ├── api/              # REST API (DRF)
 ├── templates/        # Global templates (base, 404)
 ├── static/           # Global static (CSS, images)
-├── media/            # User uploads (covers, files) — not in git
+├── media/            # User uploads (covers, files) 
 ├── manage.py
 ├── requirements.txt
 
