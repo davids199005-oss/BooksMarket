@@ -1,0 +1,51 @@
+/* ===== About page ===== */
+.about-content {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 1rem;
+    animation: fadeInUp 0.5s ease-out 0.1s both;
+}
+
+.about-block {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transition: box-shadow var(--transition);
+}
+
+.about-block:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.about-block:last-child {
+    margin-bottom: 0;
+}
+
+.about-heading {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.75rem;
+}
+
+.about-text {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.about-link {
+    color: var(--color-accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.about-link:hover {
+    color: var(--color-accent-hover);
+}

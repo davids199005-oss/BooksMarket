@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Categories — Code Nest{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <h1 class="page-title">Categories</h1>
+    <p class="page-lead">Browse books by topic. Choose a category to explore our curated selection of programming literature.</p>
+</section>
+
+<div class="categories-wrap">
+    {% if categories %}
+    <ul class="category-list">
+        {% for cat in categories %}
+        <li class="category-item">
+            <a href="{% url 'category_detail' cat.slug %}" class="category-link">
+                <span class="category-title">{{ cat.title }}</span>
+                {% if cat.description %}
+                <span class="category-desc">{{ cat.description }}</span>
+                {% endif %}
+                <span class="category-meta">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                    </svg>
+                    {{ cat.book_count }} book{{ cat.book_count|pluralize }}
+                </span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-msg">
+        <svg class="icon icon--empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <p>No categories yet. Check back later.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

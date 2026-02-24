@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About — Code Nest{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/categories.css' %}">
+<link rel="stylesheet" href="{% static 'books_market/css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <h1 class="page-title">About</h1>
+    <p class="page-lead">Code Nest is a curated collection of programming books. Find reads by topic and language.</p>
+</section>
+
+<div class="about-content page-container">
+    <div class="about-block">
+        <h2 class="about-heading">What is Code Nest?</h2>
+        <p class="about-text">A place to discover technical books — from classics to modern stacks. Browse by category, filter by language, and read online or download when available.</p>
+    </div>
+    <div class="about-block">
+        <h2 class="about-heading">Contact</h2>
+        <p class="about-text">Created by <a href="https://github.com/davids199005-oss" class="about-link">David Veryutin</a>. You can find the project and get in touch via GitHub.</p>
+    </div>
+</div>
+{% endblock %}
