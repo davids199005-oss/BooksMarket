@@ -27,6 +27,10 @@
             <ul class="nav-list">
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'category_list' %}">Browse Books</a></li>
+                <li><a href="{% url 'cabinet' %}">Cabinet</a></li>
+                <li id="nav-login"><a href="{% url 'login' %}">Log in</a></li>
+                <li id="nav-register"><a href="{% url 'register' %}">Register</a></li>
+                <li id="nav-logout" class="nav-item-logout"><a href="#" id="nav-logout-link">Log out</a></li>
                 <li><a href="{% url 'about' %}">About</a></li>
             </ul>
         </div>
@@ -42,5 +46,39 @@
             <p>Created by <a href="https://github.com/davids199005-oss">David Veryutin</a> &copy; 2026 Code Nest</p>
         </div>
     </footer>
+    <script>
+    (function() {
+        var hasToken = !!localStorage.getItem('access');
+        var loginLi = document.getElementById('nav-login');
+        var registerLi = document.getElementById('nav-register');
+        var logoutLi = document.getElementById('nav-logout');
+        var logoutLink = document.getElementById('nav-logout-link');
+        if (hasToken) {
+            if (loginLi) loginLi.style.display = 'none';
+            if (registerLi) registerLi.style.display = 'none';
+            if (logoutLi) logoutLi.classList.add('is-visible');
+        } else {
+            if (loginLi) loginLi.style.display = '';
+            if (registerLi) registerLi.style.display = '';
+            if (logoutLi) logoutLi.classList.remove('is-visible');
+        }
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                var refresh = localStorage.getItem('refresh');
+                if (refresh) {
+                    fetch((window.location.origin || '') + '/api/auth/logout/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ refresh: refresh })
+                    }).catch(function() {});
+                }
+                localStorage.removeItem('access');
+                localStorage.removeItem('refresh');
+                window.location.href = "{% url 'home' %}";
+            });
+        }
+    })();
+    </script>
 </body>
 </html>

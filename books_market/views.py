@@ -26,3 +26,19 @@ def category_detail(request, slug):
 def book_detail(request, slug):
     book = get_object_or_404(Book.objects.select_related('category', 'language'), slug=slug)
     return render(request, 'books_market/book_detail.html', {'book': book})
+
+
+def register_page(request):
+    return render(request, 'books_market/register.html')
+
+
+def login_page(request):
+    return render(request, 'books_market/login.html')
+
+
+def welcome_page(request):
+    return render(request, 'books_market/welcome.html')
+
+
+def cabinet_page(request):
+    return render(request, 'books_market/cabinet.html')

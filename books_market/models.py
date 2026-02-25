@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.utils.text import slugify
@@ -75,3 +76,39 @@ class Book(models.Model):
                 Book.objects, "slug", base_slug, exclude_pk=self.pk
             )
         super().save(*args, **kwargs)
+
+
+class BookFavorite(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="book_favorites",
+    )
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="favorited_by",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [["user", "book"]]
+        ordering = ["-created_at"]
+
+
+class BookRead(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="books_read",
+    )
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name="read_by",
+    )
+    read_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [["user", "book"]]
+        ordering = ["-read_at"]

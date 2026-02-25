@@ -1,0 +1,54 @@
+/* ===== Book detail page: user actions (favorite, read) ===== */
+.book-user-actions {
+    display: none;
+    margin-bottom: 1rem;
+}
+
+.book-user-actions.is-visible {
+    display: block;
+}
+
+.book-user-actions .book-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.book-btn-favorite {
+    background: rgba(193, 127, 89, 0.12);
+    color: var(--color-accent);
+    border: 1px solid rgba(193, 127, 89, 0.35);
+}
+
+.book-btn-favorite:hover:not(:disabled) {
+    background: rgba(193, 127, 89, 0.2);
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(193, 127, 89, 0.25);
+}
+
+.book-btn-favorite.is-added,
+.book-btn-favorite:disabled {
+    background: var(--color-accent-soft);
+    color: var(--color-accent-hover);
+    border-color: var(--color-accent);
+}
+
+.book-btn-read {
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+    border: 1px solid rgba(5, 150, 105, 0.35);
+}
+
+.book-btn-read:hover:not(:disabled) {
+    background: rgba(5, 150, 105, 0.18);
+    border-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
+.book-btn-read.is-added,
+.book-btn-read:disabled {
+    background: rgba(5, 150, 105, 0.15);
+    color: #047857;
+    border-color: #059669;
+}

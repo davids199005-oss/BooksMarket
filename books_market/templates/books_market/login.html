@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Log in — Code Nest{% endblock %}
+{% block body_class %}page-auth page-login{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page page-container">
+    <h1 class="auth-title">Log in</h1>
+    <p class="auth-subtitle">Sign in to your account.</p>
+
+    <div id="auth-errors" class="form-errors" role="alert" aria-live="polite" hidden></div>
+
+    <form id="login-form" class="auth-form" method="post" action="#" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_username">Username</label>
+            <input type="text" id="id_username" name="username" required autocomplete="username" autofocus>
+            <span class="field-error" id="err-username" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+            <label for="id_password">Password</label>
+            <input type="password" id="id_password" name="password" required autocomplete="current-password">
+            <span class="field-error" id="err-password" aria-live="polite"></span>
+        </div>
+        <button type="submit" class="btn-auth" id="submit-btn">Log in</button>
+    </form>
+
+    <p class="auth-footer">
+        Don't have an account? <a href="{% url 'register' %}">Register</a>
+    </p>
+</div>
+
+<script>
+(function() {
+    const form = document.getElementById('login-form');
+    const errorsBlock = document.getElementById('auth-errors');
+    const submitBtn = document.getElementById('submit-btn');
+    const welcomeUrl = "{% url 'welcome' %}";
+    const apiUrl = (window.location.origin || '') + '/api/auth/token/';
+
+    function showError(msg) {
+        errorsBlock.textContent = msg || '';
+        errorsBlock.hidden = !msg;
+    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        showError('');
+        submitBtn.disabled = true;
+
+        var body = {
+            username: document.getElementById('id_username').value.trim(),
+            password: document.getElementById('id_password').value
+        };
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        })
+        .then(function(res) {
+            return res.json()
+                .then(function(data) { return { ok: res.ok, status: res.status, data: data }; })
+                .catch(function() { return { ok: false, status: res.status, data: { detail: 'Invalid response from server.' } }; });
+        })
+        .then(function(result) {
+            if (result.ok && result.data && result.data.access) {
+                try {
+                    localStorage.setItem('access', result.data.access);
+                    if (result.data.refresh) localStorage.setItem('refresh', result.data.refresh);
+                } catch (err) {}
+                window.location.href = welcomeUrl;
+                return;
+            }
+            showError(result.data.detail || result.data.password || 'Invalid username or password.');
+        })
+        .catch(function() {
+            showError('Something went wrong. Please try again.');
+        })
+        .finally(function() { submitBtn.disabled = false; });
+    });
+})();
+</script>
+{% endblock %}

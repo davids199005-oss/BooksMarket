@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Welcome — Code Nest{% endblock %}
+{% block body_class %}page-welcome{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-page page-container">
+    <h1 class="auth-title" id="welcome-title">Welcome!</h1>
+    <p class="auth-subtitle" id="welcome-subtitle">Loading...</p>
+    <div class="welcome-actions">
+        <a href="{% url 'cabinet' %}" class="btn-auth welcome-btn">Personal cabinet</a>
+        <a href="{% url 'category_list' %}" class="welcome-link">Browse books</a>
+    </div>
+</div>
+
+<script>
+(function() {
+    const titleEl = document.getElementById('welcome-title');
+    const subtitleEl = document.getElementById('welcome-subtitle');
+    const token = localStorage.getItem('access');
+    const welcomeUrl = "{% url 'welcome' %}";
+    const loginUrl = "{% url 'login' %}";
+    const meUrl = (window.location.origin || '') + '/api/auth/me/';
+
+    if (!token) {
+        titleEl.textContent = 'Welcome!';
+        subtitleEl.textContent = 'You are not logged in.';
+        subtitleEl.innerHTML += ' <a href="' + loginUrl + '">Log in</a>';
+        return;
+    }
+
+    fetch(meUrl, {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(function(res) {
+        if (res.status === 401) {
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            window.location.href = loginUrl;
+            return null;
+        }
+        return res.json();
+    })
+    .then(function(data) {
+        if (!data) return;
+        titleEl.textContent = 'Welcome, ' + (data.username || '') + '!';
+        subtitleEl.textContent = 'You are logged in. Go to your personal cabinet or browse books.';
+    })
+    .catch(function() {
+        titleEl.textContent = 'Welcome!';
+        subtitleEl.textContent = 'Could not load your profile.';
+    });
+})();
+</script>
+{% endblock %}

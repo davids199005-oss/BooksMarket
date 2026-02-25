@@ -1,0 +1,89 @@
+/* ===== Cabinet page ===== */
+.page-cabinet .cabinet-section {
+    margin-bottom: 2.5rem;
+}
+
+.page-cabinet .cabinet-section h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 1rem;
+}
+
+.page-cabinet .cabinet-loading {
+    color: var(--color-text-muted);
+}
+
+.page-cabinet .cabinet-loading.is-hidden {
+    display: none;
+}
+
+.page-cabinet .cabinet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+}
+
+.page-cabinet .cabinet-list.is-visible {
+    display: block;
+}
+
+.page-cabinet .cabinet-list li {
+    margin-bottom: 0.75rem;
+}
+
+.page-cabinet .cabinet-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.page-cabinet .cabinet-list-item a {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.page-cabinet .cabinet-remove {
+    flex-shrink: 0;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.page-cabinet .cabinet-remove:hover:not(:disabled) {
+    color: var(--color-text);
+    border-color: rgba(15, 23, 42, 0.3);
+    background: var(--color-bg);
+}
+
+.page-cabinet .cabinet-remove:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.page-cabinet .cabinet-list a {
+    color: var(--color-accent);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.page-cabinet .cabinet-list a:hover {
+    text-decoration: underline;
+}
+
+.page-cabinet .cabinet-empty {
+    color: var(--color-text-muted);
+    padding: 1rem 0;
+    display: none;
+}
+
+.page-cabinet .cabinet-empty.is-visible {
+    display: block;
+}

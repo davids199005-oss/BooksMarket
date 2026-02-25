@@ -254,6 +254,14 @@ body {
     font-weight: 600;
 }
 
+.nav-item-logout {
+    display: none;
+}
+
+.nav-item-logout.is-visible {
+    display: list-item;
+}
+
 /* ===== Main content container ===== */
 .page-container {
     max-width: var(--container-max);

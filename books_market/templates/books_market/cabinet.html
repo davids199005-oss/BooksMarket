@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Personal cabinet — Code Nest{% endblock %}
+{% block body_class %}page-cabinet{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/categories.css' %}">
+<link rel="stylesheet" href="{% static 'books_market/css/auth.css' %}">
+<link rel="stylesheet" href="{% static 'books_market/css/cabinet.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="auth-title">Personal cabinet</h1>
+    <p class="auth-subtitle">Your favorite and read books.</p>
+
+    <section class="cabinet-section" id="favorites-section">
+        <h2>Favorites</h2>
+        <div id="favorites-loading" class="cabinet-loading">Loading...</div>
+        <ul id="favorites-list" class="cabinet-list"></ul>
+        <p id="favorites-empty" class="cabinet-empty">No favorite books yet. Add books from their pages.</p>
+    </section>
+
+    <section class="cabinet-section" id="read-section">
+        <h2>Read books</h2>
+        <div id="read-loading" class="cabinet-loading">Loading...</div>
+        <ul id="read-list" class="cabinet-list"></ul>
+        <p id="read-empty" class="cabinet-empty">No books marked as read yet.</p>
+    </section>
+</div>
+
+<script>
+(function() {
+    const token = localStorage.getItem('access');
+    const loginUrl = "{% url 'login' %}";
+    const baseUrl = window.location.origin || '';
+    function buildBookUrl(slug) { return baseUrl + '/books/' + slug + '/'; }
+
+    if (!token) {
+        document.getElementById('favorites-loading').textContent = '';
+        document.getElementById('read-loading').textContent = '';
+        document.querySelector('.auth-subtitle').innerHTML = 'Please <a href="' + loginUrl + '">log in</a> to see your cabinet.';
+        return;
+    }
+
+    const headers = { 'Authorization': 'Bearer ' + token };
+
+    function escapeHtml(s) {
+        if (!s) return '';
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+    }
+
+    fetch(baseUrl + '/api/me/favorites/', { headers: headers })
+        .then(function(res) {
+            if (res.status === 401) { window.location.href = loginUrl; return null; }
+            return res.json();
+        })
+        .then(function(data) {
+            var loading = document.getElementById('favorites-loading');
+            var list = document.getElementById('favorites-list');
+            var empty = document.getElementById('favorites-empty');
+            loading.classList.add('is-hidden');
+            if (!data || !Array.isArray(data)) return;
+            if (data.length === 0) {
+                empty.classList.add('is-visible');
+            } else {
+                list.innerHTML = data.map(function(b) {
+                    var url = buildBookUrl(b.slug);
+                    var titleText = escapeHtml(b.title) + (b.author ? ' — ' + escapeHtml(b.author) : '');
+                    return '<li class="cabinet-list-item"><a href="' + url + '">' + titleText + '</a> <button type="button" class="cabinet-remove" data-book-slug="' + escapeHtml(b.slug) + '" data-list="favorites" aria-label="Remove">Remove</button></li>';
+                }).join('');
+                list.classList.add('is-visible');
+            }
+        });
+
+    fetch(baseUrl + '/api/me/read/', { headers: headers })
+        .then(function(res) {
+            if (res.status === 401) { window.location.href = loginUrl; return null; }
+            return res.json();
+        })
+        .then(function(data) {
+            var loading = document.getElementById('read-loading');
+            var list = document.getElementById('read-list');
+            var empty = document.getElementById('read-empty');
+            loading.classList.add('is-hidden');
+            if (!data || !Array.isArray(data)) return;
+            if (data.length === 0) {
+                empty.classList.add('is-visible');
+            } else {
+                list.innerHTML = data.map(function(b) {
+                    var url = buildBookUrl(b.slug);
+                    var titleText = escapeHtml(b.title) + (b.author ? ' — ' + escapeHtml(b.author) : '');
+                    return '<li class="cabinet-list-item"><a href="' + url + '">' + titleText + '</a> <button type="button" class="cabinet-remove" data-book-slug="' + escapeHtml(b.slug) + '" data-list="read" aria-label="Remove">Remove</button></li>';
+                }).join('');
+                list.classList.add('is-visible');
+            }
+        });
+
+    function onRemoveClick(e) {
+        var btn = e.target.closest('.cabinet-remove');
+        if (!btn || btn.disabled) return;
+        var slug = btn.getAttribute('data-book-slug');
+        var listType = btn.getAttribute('data-list');
+        var list = listType === 'favorites' ? document.getElementById('favorites-list') : document.getElementById('read-list');
+        var empty = listType === 'favorites' ? document.getElementById('favorites-empty') : document.getElementById('read-empty');
+        var path = listType === 'favorites' ? '/api/me/favorites/' : '/api/me/read/';
+        btn.disabled = true;
+        fetch(baseUrl + path + encodeURIComponent(slug) + '/', { method: 'DELETE', headers: headers })
+            .then(function(res) {
+                if (res.status === 204) {
+                    var li = btn.closest('li');
+                    if (li) li.remove();
+                    if (list && list.children.length === 0) {
+                        list.classList.remove('is-visible');
+                        if (empty) empty.classList.add('is-visible');
+                    }
+                }
+            })
+            .finally(function() { btn.disabled = false; });
+    }
+    document.getElementById('favorites-list').addEventListener('click', onRemoveClick);
+    document.getElementById('read-list').addEventListener('click', onRemoveClick);
+})();
+</script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Language, Book
+from .models import Category, Language, Book, BookFavorite, BookRead
 
 
 @admin.register(Category)
@@ -24,3 +24,15 @@ class BookAdmin(admin.ModelAdmin):
     @admin.display(description='Published Year')
     def get_published_year(self, obj):
         return obj.published_date.year if obj.published_date else ''
+
+
+@admin.register(BookFavorite)
+class BookFavoriteAdmin(admin.ModelAdmin):
+    list_display = ['user', 'book', 'created_at']
+    list_filter = ['user']
+
+
+@admin.register(BookRead)
+class BookReadAdmin(admin.ModelAdmin):
+    list_display = ['user', 'book', 'read_at']
+    list_filter = ['user']
