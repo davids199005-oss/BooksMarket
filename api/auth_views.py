@@ -74,7 +74,7 @@ class PasswordResetRequestView(APIView):
         email = request.data.get('email', '').strip()
         if not email:
             return Response(
-                {'detail': 'Укажите email.'},
+                {'detail': 'Enter your email.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         user = User.objects.filter(email__iexact=email, is_active=True).first()
@@ -92,7 +92,7 @@ class PasswordResetRequestView(APIView):
                 fail_silently=False,
             )
         return Response(
-            {'detail': 'Если аккаунт с таким email существует, вы получите письмо с инструкциями.'},
+            {'detail': 'If an account with this email exists, you will receive an email with instructions.'},
             status=status.HTTP_200_OK,
         )
 
@@ -109,19 +109,19 @@ class PasswordResetConfirmView(APIView):
 
         errors = {}
         if not uid:
-            errors['uid'] = ['Обязательное поле.']
+            errors['uid'] = ['Required field.']
         if not token:
-            errors['token'] = ['Обязательное поле.']
+            errors['token'] = ['Required field.']
         if not new_password:
-            errors['new_password'] = ['Обязательное поле.']
+            errors['new_password'] = ['Required field.']
         if new_password_confirm is None or new_password_confirm == '':
-            errors['new_password_confirm'] = ['Обязательное поле.']
+            errors['new_password_confirm'] = ['Required field.']
         if errors:
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
         if new_password != new_password_confirm:
             return Response(
-                {'new_password_confirm': ['Пароли не совпадают.']},
+                {'new_password_confirm': ['Passwords do not match.']},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -130,14 +130,14 @@ class PasswordResetConfirmView(APIView):
             user_id = int(user_id)
         except (TypeError, ValueError, UnicodeDecodeError):
             return Response(
-                {'detail': 'Некорректная ссылка сброса.'},
+                {'detail': 'Invalid reset link.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         user = User.objects.filter(pk=user_id, is_active=True).first()
         if not user or not default_token_generator.check_token(user, token):
             return Response(
-                {'detail': 'Ссылка сброса недействительна или устарела.'},
+                {'detail': 'Reset link is invalid or expired.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -153,4 +153,4 @@ class PasswordResetConfirmView(APIView):
 
         user.set_password(new_password)
         user.save()
-        return Response({'detail': 'Пароль успешно изменён.'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Password successfully changed.'}, status=status.HTTP_200_OK)
