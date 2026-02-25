@@ -11,7 +11,7 @@ env/
 *.log
 local_settings.py
 staticfiles/
-db.sqlite3
+
 
 # IDE
 .idea/
@@ -26,3 +26,7 @@ Thumbs.db
 # Env (secrets)
 .env
 .env.local
+
+
+# Database
+db.sqlite3
