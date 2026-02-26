@@ -1,0 +1,38 @@
+/* ===== Error pages (404, 500) ===== */
+.error-page {
+    text-align: center;
+    padding: 3rem 1rem;
+    animation: fadeInUp 0.4s var(--ease-out) both;
+}
+
+.error-page-title {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0 0 1rem;
+    line-height: 1;
+}
+
+.error-page-text {
+    color: var(--color-text-muted);
+    margin: 0 0 0.5rem;
+}
+
+.error-page-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    color: #fff;
+    background: var(--gradient-accent);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radius-full);
+    transition: color var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.error-page-link:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}

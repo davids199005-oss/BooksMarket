@@ -1,0 +1,9 @@
+/* ===== Login page (auth layout and form from base.css) ===== */
+.page-login .auth-form {
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: var(--gradient-card);
+}
+
+.page-login .btn-auth {
+    border-radius: var(--radius-sm);
+}

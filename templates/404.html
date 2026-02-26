@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Page not found — Code Nest{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/error.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="page-container error-page">

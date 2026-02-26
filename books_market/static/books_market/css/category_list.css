@@ -1,0 +1,108 @@
+/* ===== Category list page (page-head, breadcrumb, empty-msg from base) ===== */
+.categories-wrap {
+    max-width: var(--container-max);
+    margin: 0 auto;
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.category-item {
+    margin: 0;
+    animation: fadeInUp 0.5s var(--ease-out) both;
+}
+
+.category-item:nth-child(1) { animation-delay: 0.05s; }
+.category-item:nth-child(2) { animation-delay: 0.1s; }
+.category-item:nth-child(3) { animation-delay: 0.15s; }
+.category-item:nth-child(4) { animation-delay: 0.2s; }
+.category-item:nth-child(5) { animation-delay: 0.25s; }
+.category-item:nth-child(6) { animation-delay: 0.3s; }
+.category-item:nth-child(n+7) { animation-delay: 0.35s; }
+
+.category-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: transform var(--transition), box-shadow var(--transition),
+        border-color var(--transition);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-accent);
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+.category-link:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-6px);
+    border-color: var(--color-accent-soft);
+}
+
+.category-link:hover::before {
+    opacity: 1;
+}
+
+.category-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+    transition: color var(--transition);
+}
+
+.category-link:hover .category-title {
+    color: var(--color-accent);
+}
+
+.category-desc {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.category-meta {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    background: var(--color-accent-soft);
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--radius-full);
+    align-self: flex-start;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.category-meta .icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: text-bottom;
+    margin-right: 4px;
+}

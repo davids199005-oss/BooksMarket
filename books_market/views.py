@@ -2,11 +2,25 @@ import os
 import mimetypes
 
 from django.shortcuts import render, get_object_or_404
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, HttpResponse
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
+from django.templatetags.static import static
 
 from .models import Category, Book
+
+
+def theme_css(request):
+    """Serves a small CSS file with theme variables (static image URLs). No inline styles in HTML."""
+    header_bg = static("img/header_bg.jpg")
+    hero_bg = static("img/landing_bg.jpg")
+    css = (
+        ":root {\n"
+        f"  --header-bg-image: url('{header_bg}');\n"
+        f"  --hero-bg-image: url('{hero_bg}');\n"
+        "}\n"
+    )
+    return HttpResponse(css, content_type="text/css")
 
 
 def home(request):

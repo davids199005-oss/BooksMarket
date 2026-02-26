@@ -1,0 +1,9 @@
+/* ===== Register page (auth layout and form from base.css) ===== */
+.page-register .auth-form {
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    background: var(--gradient-card);
+}
+
+.page-register .btn-auth {
+    border-radius: var(--radius-sm);
+}
