@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -30,6 +30,16 @@ class AuthThrottle(AnonRateThrottle):
 class LoginView(TokenObtainPairView):
     throttle_classes = [AuthThrottle]
 
+    def post(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if username and password:
+            from django.contrib.auth import authenticate, login
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+        return super().post(request, *args, **kwargs)
+
 
 class TokenRefreshThrottleView(TokenRefreshView):
     throttle_classes = [AuthThrottle]
@@ -37,6 +47,11 @@ class TokenRefreshThrottleView(TokenRefreshView):
 
 class LogoutView(TokenBlacklistView):
     throttle_classes = [AuthThrottle]
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        logout(request)
+        return response
 
 
 class RegisterView(APIView):

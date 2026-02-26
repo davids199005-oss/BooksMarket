@@ -9,6 +9,14 @@ def _absolute_uri(request, url):
     return request.build_absolute_uri(url)
 
 
+def _protected_book_file_url(request, book):
+    """URL для чтения файла книги (защищённый endpoint); только для авторизованных."""
+    if not request or not request.user.is_authenticated or not book or not book.file:
+        return None
+    from django.urls import reverse
+    return request.build_absolute_uri(reverse("book_read", kwargs={"slug": book.slug}))
+
+
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
@@ -44,10 +52,8 @@ class BookListSerializer(serializers.ModelSerializer):
         return _absolute_uri(request, obj.image.url)
 
     def get_file_url(self, obj):
-        if not obj.file:
-            return None
-        request = self.context.get('request')
-        return _absolute_uri(request, obj.file.url)
+        request = self.context.get("request")
+        return _protected_book_file_url(request, obj)
 
 
 class BookDetailSerializer(serializers.ModelSerializer):
@@ -71,7 +77,5 @@ class BookDetailSerializer(serializers.ModelSerializer):
         return _absolute_uri(request, obj.image.url)
 
     def get_file_url(self, obj):
-        if not obj.file:
-            return None
-        request = self.context.get('request')
-        return _absolute_uri(request, obj.file.url)
+        request = self.context.get("request")
+        return _protected_book_file_url(request, obj)

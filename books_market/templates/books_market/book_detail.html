@@ -22,7 +22,7 @@
     <span class="breadcrumb-current">{{ book.title }}</span>
 </nav>
 
-<div class="book-detail-wrap">
+<div class="book-detail-wrap" data-book-slug="{{ book.slug }}">
     <div class="book-detail-main">
         <div class="book-detail-cover">
             {% if book.image %}
@@ -63,6 +63,7 @@
                 </span>
             </div>
 
+            {% if user_can_access_file %}
             <div id="book-user-actions" class="book-detail-actions book-user-actions">
                 <button type="button" id="btn-favorite" class="book-btn book-btn-favorite" aria-label="Add to favorites">
                     <svg class="icon icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -77,16 +78,18 @@
                     Mark as read
                 </button>
             </div>
+            {% endif %}
             {% if book.file %}
+            {% if user_can_access_file %}
             <div class="book-detail-actions">
-                <a href="{{ book.file.url }}" target="_blank" rel="noopener noreferrer" class="book-btn book-btn-primary">
+                <a href="{% url 'book_read' book.slug %}" target="_blank" rel="noopener noreferrer" class="book-btn book-btn-primary">
                     <svg class="icon icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                     </svg>
                     Read Online
                 </a>
-                <a href="{{ book.file.url }}" download class="book-btn book-btn-secondary">
+                <a href="{% url 'book_download' book.slug %}" class="book-btn book-btn-secondary">
                     <svg class="icon icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -95,6 +98,12 @@
                     Download PDF
                 </a>
             </div>
+            {% else %}
+            <div class="book-detail-actions book-login-prompt">
+                <p class="book-login-prompt-text">Login to read and download the book.</p>
+                <a href="{% url 'login' %}?next={{ request.path }}" class="book-btn book-btn-primary">Login</a>
+            </div>
+            {% endif %}
             {% else %}
             <div class="book-no-file">
                 <svg class="icon icon--warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -116,87 +125,5 @@
     </div>
 </div>
 
-<script>
-(function() {
-    var token = localStorage.getItem('access');
-    if (!token) return;
-    var wrap = document.getElementById('book-user-actions');
-    if (!wrap) return;
-    wrap.classList.add('is-visible');
-    var bookSlug = '{{ book.slug|escapejs }}';
-    var baseUrl = window.location.origin || '';
-    var headers = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
-    var btnFav = document.getElementById('btn-favorite');
-    var btnRead = document.getElementById('btn-read');
-
-    var inFavorites = false;
-    var inRead = false;
-
-    var heartOutline = '<svg class="icon icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
-    var heartFilled = '<svg class="icon icon--btn" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
-    var checkIcon = '<svg class="icon icon--btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-
-    function setFavAdded(added) {
-        inFavorites = added;
-        if (!btnFav) return;
-        btnFav.classList.toggle('is-added', added);
-        btnFav.innerHTML = (added ? heartFilled : heartOutline) + (added ? ' In favorites (click to remove)' : ' Add to favorites');
-        btnFav.setAttribute('aria-label', added ? 'Remove from favorites' : 'Add to favorites');
-    }
-    function setReadAdded(added) {
-        inRead = added;
-        if (!btnRead) return;
-        btnRead.classList.toggle('is-added', added);
-        btnRead.innerHTML = checkIcon + (added ? ' Marked as read (click to remove)' : ' Mark as read');
-        btnRead.setAttribute('aria-label', added ? 'Remove from read list' : 'Mark as read');
-    }
-
-    Promise.all([
-        fetch(baseUrl + '/api/me/favorites/', { headers: headers }).then(function(r) { return r.json(); }).catch(function() { return []; }),
-        fetch(baseUrl + '/api/me/read/', { headers: headers }).then(function(r) { return r.json(); }).catch(function() { return []; })
-    ]).then(function(results) {
-        var favList = Array.isArray(results[0]) ? results[0] : [];
-        var readList = Array.isArray(results[1]) ? results[1] : [];
-        setFavAdded(favList.some(function(b) { return b.slug === bookSlug; }));
-        setReadAdded(readList.some(function(b) { return b.slug === bookSlug; }));
-    });
-
-    if (btnFav) {
-        btnFav.addEventListener('click', function() {
-            if (btnFav.disabled) return;
-            btnFav.disabled = true;
-            if (inFavorites) {
-                fetch(baseUrl + '/api/me/favorites/' + encodeURIComponent(bookSlug) + '/', { method: 'DELETE', headers: headers })
-                    .then(function(r) {
-                        if (r.status === 204) setFavAdded(false);
-                    })
-                    .finally(function() { btnFav.disabled = false; });
-            } else {
-                fetch(baseUrl + '/api/me/favorites/', { method: 'POST', headers: headers, body: JSON.stringify({ book_slug: bookSlug }) })
-                    .then(function(r) { return r.json().catch(function() { return {}; }); })
-                    .then(function() { setFavAdded(true); })
-                    .finally(function() { btnFav.disabled = false; });
-            }
-        });
-    }
-    if (btnRead) {
-        btnRead.addEventListener('click', function() {
-            if (btnRead.disabled) return;
-            btnRead.disabled = true;
-            if (inRead) {
-                fetch(baseUrl + '/api/me/read/' + encodeURIComponent(bookSlug) + '/', { method: 'DELETE', headers: headers })
-                    .then(function(r) {
-                        if (r.status === 204) setReadAdded(false);
-                    })
-                    .finally(function() { btnRead.disabled = false; });
-            } else {
-                fetch(baseUrl + '/api/me/read/', { method: 'POST', headers: headers, body: JSON.stringify({ book_slug: bookSlug }) })
-                    .then(function(r) { return r.json().catch(function() { return {}; }); })
-                    .then(function() { setReadAdded(true); })
-                    .finally(function() { btnRead.disabled = false; });
-            }
-        });
-    }
-})();
-</script>
+<script src="{% static 'js/book_detail_actions.js' %}"></script>
 {% endblock %}

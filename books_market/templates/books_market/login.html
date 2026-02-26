@@ -40,6 +40,7 @@
     const errorsBlock = document.getElementById('auth-errors');
     const submitBtn = document.getElementById('submit-btn');
     const welcomeUrl = "{% url 'welcome' %}";
+    const nextUrl = "{{ request.GET.next|default:'' }}";
     const apiUrl = (window.location.origin || '') + '/api/auth/token/';
 
     function showError(msg) {
@@ -73,7 +74,8 @@
                     localStorage.setItem('access', result.data.access);
                     if (result.data.refresh) localStorage.setItem('refresh', result.data.refresh);
                 } catch (err) {}
-                window.location.href = welcomeUrl;
+                var redirectTo = (nextUrl && nextUrl.startsWith('/')) ? nextUrl : welcomeUrl;
+                window.location.href = redirectTo;
                 return;
             }
             showError(result.data.detail || result.data.password || 'Invalid username or password.');
