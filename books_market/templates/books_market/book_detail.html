@@ -22,25 +22,29 @@
 </nav>
 
 <div class="book-detail-wrap" data-book-slug="{{ book.slug }}">
-    <div class="book-detail-main">
-        <div class="book-detail-cover">
-            {% if book.image %}
-            <img src="{{ book.image.url }}" alt="{{ book.title }}">
-            {% else %}
-            <div class="book-cover-placeholder">
-                <svg class="icon icon--placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                </svg>
+    <article class="book-detail-main">
+        <div class="book-detail-cover-wrap">
+            <div class="book-detail-cover">
+                {% if book.image %}
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" loading="eager">
+                {% else %}
+                <div class="book-cover-placeholder">
+                    <svg class="icon icon--placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
         <div class="book-detail-info">
-            <h1 class="book-detail-title">{{ book.title }}</h1>
-            <p class="book-detail-author">{{ book.author }}</p>
+            <header class="book-detail-header">
+                <h1 class="book-detail-title">{{ book.title }}</h1>
+                <p class="book-detail-author">{{ book.author }}</p>
+            </header>
 
-            <div class="book-detail-meta-wrap">
+            <div class="book-detail-meta-wrap" aria-label="Book details">
                 {% if book.language %}
                 <span class="book-detail-meta">
                     <svg class="icon icon--meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -51,6 +55,7 @@
                     {{ book.language.name }}
                 </span>
                 {% endif %}
+                {% if book.published_date %}
                 <span class="book-detail-meta">
                     <svg class="icon icon--meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -60,6 +65,13 @@
                     </svg>
                     {{ book.published_date|date:"Y" }}
                 </span>
+                {% endif %}
+                <a href="{% url 'category_detail' book.category.slug %}" class="book-detail-meta book-detail-meta--link">
+                    <svg class="icon icon--meta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                    </svg>
+                    {{ book.category.title }}
+                </a>
             </div>
 
             {% if user_can_access_file %}
@@ -115,13 +127,13 @@
             {% endif %}
 
             {% if book.description %}
-            <div class="book-detail-description">
-                <h2 class="book-detail-heading">About this book</h2>
+            <section class="book-detail-description" aria-labelledby="about-heading">
+                <h2 id="about-heading" class="book-detail-heading">About this book</h2>
                 <div class="book-detail-text">{{ book.description|linebreaks }}</div>
-            </div>
+            </section>
             {% endif %}
         </div>
-    </div>
+    </article>
 </div>
 
 <script src="{% static 'js/book_detail_actions.js' %}"></script>
