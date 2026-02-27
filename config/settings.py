@@ -133,11 +133,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Auth redirects (для @login_required и редиректа после входа)
+# Auth redirects (for @login_required and post-login redirect)
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/welcome/'
 
-# Media files (загрузки пользователей: обложки книг и т.д.)
+# Media files (user uploads: book covers, etc.)
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
@@ -170,7 +170,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-# CORS: в DEBUG разрешаем типичные origins; в production задать CORS_ALLOWED_ORIGINS
+# CORS: in DEBUG allow typical origins; in production set CORS_ALLOWED_ORIGINS
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
@@ -180,7 +180,7 @@ else:
     else:
         CORS_ALLOWED_ORIGINS = []
 
-# Email (сброс пароля)
+# Email (password reset)
 EMAIL_BACKEND = os.environ.get(
     'EMAIL_BACKEND',
     'django.core.mail.backends.console.EmailBackend',

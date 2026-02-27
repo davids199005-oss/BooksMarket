@@ -10,7 +10,7 @@ def _absolute_uri(request, url):
 
 
 def _protected_book_file_url(request, book):
-    """URL для чтения файла книги (защищённый endpoint); только для авторизованных."""
+    """URL for reading the book file (protected endpoint); authenticated users only."""
     if not request or not request.user.is_authenticated or not book or not book.file:
         return None
     from django.urls import reverse

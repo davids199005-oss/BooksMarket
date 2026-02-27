@@ -78,7 +78,7 @@ def book_detail(request, slug):
 
 
 def _serve_book_file(book, as_attachment: bool):
-    """Отдаёт файл книги; вызывается только для авторизованных."""
+    """Serves the book file to authenticated users. Ensures the file handle is closed."""
     if not book.file:
         raise Http404("File not available")
     path = book.file.path
@@ -88,21 +88,26 @@ def _serve_book_file(book, as_attachment: bool):
     content_type, _ = mimetypes.guess_type(filename)
     if not content_type:
         content_type = "application/octet-stream"
-    response = FileResponse(open(path, "rb"), as_attachment=as_attachment, filename=filename)
-    response["Content-Type"] = content_type
-    return response
+    f = open(path, "rb")
+    try:
+        response = FileResponse(f, as_attachment=as_attachment, filename=filename)
+        response["Content-Type"] = content_type
+        return response
+    except Exception:
+        f.close()
+        raise
 
 
 @login_required
 def book_read(request, slug):
-    """Отдача файла книги для просмотра в браузере (inline)."""
+    """Serve the book file for viewing in the browser (inline)."""
     book = get_object_or_404(Book, slug=slug)
     return _serve_book_file(book, as_attachment=False)
 
 
 @login_required
 def book_download(request, slug):
-    """Отдача файла книги для скачивания (attachment)."""
+    """Serve the book file for download (attachment)."""
     book = get_object_or_404(Book, slug=slug)
     return _serve_book_file(book, as_attachment=True)
 

@@ -1,4 +1,4 @@
-# Django и зависимости проекта
+# Django and project dependencies
 Django>=5.0,<6
 djangorestframework>=3.14
 djangorestframework-simplejwt>=5.3
