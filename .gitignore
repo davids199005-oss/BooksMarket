@@ -28,5 +28,3 @@ Thumbs.db
 .env.local
 
 
-# Database
-db.sqlite3
