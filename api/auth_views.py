@@ -38,7 +38,13 @@ class LoginView(TokenObtainPairView):
             user = authenticate(request, username=username, password=password)
             if user:
                 login(request, user)
-        return super().post(request, *args, **kwargs)
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_401_UNAUTHORIZED and response.data:
+            data = dict(response.data)
+            data['password_reset_available'] = True
+            data['password_reset_endpoint'] = '/api/auth/password/reset/'
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        return response
 
 
 class TokenRefreshThrottleView(TokenRefreshView):

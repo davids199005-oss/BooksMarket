@@ -83,7 +83,7 @@ Then open **http://127.0.0.1:8000/admin/** to manage categories, books, and user
 | `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS` | SMTP settings | — |
 | `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | SMTP credentials | — |
 | `DEFAULT_FROM_EMAIL` | From address for emails | `noreply@booksmarket.local` |
-| `FRONTEND_RESET_URL` | Password reset link base URL | `http://localhost:3000/reset-password` |
+| `FRONTEND_RESET_URL` | Base URL for the password reset link (in email). Use the same origin as the app when using built-in Django pages, e.g. `http://127.0.0.1:8000/reset-password/`. | `http://127.0.0.1:8000/reset-password/` |
 
 ## Project Structure
 
@@ -111,8 +111,8 @@ All API responses are JSON. Authenticated endpoints require header: `Authorizati
 | POST | `/api/auth/token/refresh/` | Refresh → `{ access }` |
 | POST | `/api/auth/logout/` | Logout (body: `{ refresh }`, blacklists token) |
 | GET | `/api/auth/me/` | Current user (authenticated) |
-| POST | `/api/auth/password/reset/` | Request password reset (body: `{ email }`) |
-| POST | `/api/auth/password/reset/confirm/` | Confirm reset (uid, token, new_password, new_password_confirm) |
+| POST | `/api/auth/password/reset/` | Request password reset (body: `{ email }`). Web UI: [/forgot-password/](/forgot-password/) |
+| POST | `/api/auth/password/reset/confirm/` | Confirm reset (uid, token, new_password, new_password_confirm). Link in email opens [/reset-password/?uid=…&token=…](/reset-password/) |
 | GET / POST | `/api/me/favorites/` | List or add favorite (POST body: `{ book_slug }`) |
 | DELETE | `/api/me/favorites/<slug>/` | Remove favorite |
 | GET / POST | `/api/me/read/` | List or add “read” (POST body: `{ book_slug }`) |
@@ -124,7 +124,7 @@ All API responses are JSON. Authenticated endpoints require header: `Authorizati
 - Set `ALLOWED_HOSTS` and `CORS_ALLOWED_ORIGINS`
 - Use a real database (e.g. PostgreSQL) and static/media storage as needed
 - Serve over HTTPS; the app sets secure cookies and HSTS when `DEBUG=False`
-- Configure SMTP and `FRONTEND_RESET_URL` for password reset emails
+- Configure SMTP and `FRONTEND_RESET_URL` for password reset emails. When using the built-in login and reset-password pages, keep the default or set `FRONTEND_RESET_URL` to your site’s reset page (e.g. `https://yourdomain.com/reset-password/`).
 
 ## License
 

@@ -115,6 +115,17 @@ def login_page(request):
     return render(request, 'books_market/login.html')
 
 
+def forgot_password_page(request):
+    return render(request, 'books_market/forgot_password.html')
+
+
+def reset_password_page(request):
+    return render(request, 'books_market/reset_password.html', {
+        'uid': request.GET.get('uid', ''),
+        'token': request.GET.get('token', ''),
+    })
+
+
 def welcome_page(request):
     return render(request, 'books_market/welcome.html')
 

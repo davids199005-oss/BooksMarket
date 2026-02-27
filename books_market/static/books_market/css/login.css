@@ -1,9 +1,82 @@
 /* ===== Login page (auth layout and form from base.css) ===== */
-.page-login .auth-form {
+.page-login .auth-form,
+.page-forgot-password .auth-form,
+.page-reset-password .auth-form {
     border: 1px solid rgba(0, 0, 0, 0.04);
     background: var(--gradient-card);
 }
 
-.page-login .btn-auth {
+.page-login .auth-title,
+.page-forgot-password .auth-title,
+.page-reset-password .auth-title {
+    letter-spacing: -0.02em;
+}
+
+.page-forgot-password .auth-title {
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.page-forgot-password .auth-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+.page-login .btn-auth,
+.page-forgot-password .btn-auth,
+.page-reset-password .btn-auth {
     border-radius: var(--radius-sm);
+}
+
+.auth-forgot {
+    margin: -0.25rem 0 1rem;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.auth-forgot a {
+    color: var(--color-accent, #0f6bff);
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-forgot a:hover {
+    color: var(--color-accent-hover, #0a5ae0);
+    opacity: 0.9;
+}
+
+.auth-forgot a:focus-visible {
+    outline: 2px solid var(--color-accent-soft, rgba(15, 107, 255, 0.35));
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.auth-reset-hint {
+    margin: 0.5rem 0 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted, #6b7280);
+}
+
+.auth-reset-hint a {
+    color: var(--color-accent, #0f6bff);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.auth-reset-hint a:hover {
+    color: var(--color-accent-hover, #0a5ae0);
+}
+
+.form-success {
+    background: rgba(22, 163, 74, 0.1);
+    color: #15803d;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
 }

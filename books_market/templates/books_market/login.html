@@ -26,6 +26,9 @@
             <input type="password" id="id_password" name="password" required autocomplete="current-password">
             <span class="field-error" id="err-password" aria-live="polite"></span>
         </div>
+        <p class="auth-forgot">
+            <a href="{% url 'forgot_password' %}">Forgot password?</a>
+        </p>
         <button type="submit" class="btn-auth" id="submit-btn">Log in</button>
     </form>
 
@@ -78,7 +81,16 @@
                 window.location.href = redirectTo;
                 return;
             }
-            showError(result.data.detail || result.data.password || 'Invalid username or password.');
+            var msg = result.data.detail || result.data.password || 'Invalid username or password.';
+            showError(msg);
+            if (result.data.password_reset_available) {
+                var hint = document.createElement('p');
+                hint.className = 'auth-reset-hint';
+                hint.innerHTML = 'Forgot password? <a href="{% url 'forgot_password' %}">Reset it by email</a>.';
+                if (!document.querySelector('.auth-reset-hint')) {
+                    errorsBlock.parentNode.insertBefore(hint, errorsBlock.nextSibling);
+                }
+            }
         })
         .catch(function() {
             showError('Something went wrong. Please try again.');

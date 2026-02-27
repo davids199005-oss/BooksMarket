@@ -192,7 +192,7 @@ if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@booksmarket.local')
-FRONTEND_RESET_URL = os.environ.get('FRONTEND_RESET_URL', 'http://localhost:3000/reset-password').rstrip('/')
+FRONTEND_RESET_URL = os.environ.get('FRONTEND_RESET_URL', 'http://127.0.0.1:8000/reset-password/').rstrip('/')
 
 # HTTPS and secure cookies (production only)
 if not DEBUG:
