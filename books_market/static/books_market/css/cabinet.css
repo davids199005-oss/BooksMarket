@@ -17,6 +17,25 @@
     display: none;
 }
 
+.page-cabinet .cabinet-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.page-cabinet .cabinet-skeleton-item {
+    height: 56px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: cabinet-shimmer 1.5s ease-in-out infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes cabinet-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
 .page-cabinet .cabinet-list {
     list-style: none;
     padding: 0;

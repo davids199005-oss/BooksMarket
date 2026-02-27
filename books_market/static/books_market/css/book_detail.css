@@ -328,3 +328,77 @@
     color: #047857;
     border-color: #059669;
 }
+
+/* ===== More from this category ===== */
+.book-related {
+    margin-top: 2.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    animation: fadeInUp 0.5s var(--ease-out) 0.3s both;
+}
+
+.book-related-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .book-related-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.book-related .book-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+}
+
+.book-related .book-card {
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.book-related .book-card-link:hover .book-card {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+}
+
+.book-related .book-cover {
+    aspect-ratio: 3 / 4;
+    background: #f1f5f9;
+}
+
+.book-related .book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.book-related .book-info {
+    padding: 1rem;
+}
+
+.book-related .book-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+}
+
+.book-related .book-author {
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    margin: 0;
+}

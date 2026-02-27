@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search results{% if query %} — {{ query }}{% endif %} — Code Nest{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'books_market/css/search.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="search-page-head">
+    <h1 class="page-title">Search results</h1>
+    <form action="{% url 'search' %}" method="get" class="search-form" role="search">
+        <input type="search" name="q" value="{{ query }}" placeholder="Search by title or author…" aria-label="Search books">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</section>
+
+<div class="books-wrap">
+    {% if query %}
+        {% if books %}
+        <ul class="book-list">
+            {% for book in books %}
+            <li>
+                <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
+                    <div class="book-card">
+                        {% if book.image %}
+                        <div class="book-cover">
+                            <img src="{{ book.image.url }}" alt="{{ book.title }}" width="300" height="400" loading="lazy">
+                        </div>
+                        {% else %}
+                        <div class="book-cover book-cover-placeholder">No cover</div>
+                        {% endif %}
+                        <div class="book-info">
+                            <h2 class="book-title">{{ book.title }}</h2>
+                            <p class="book-author">{{ book.author }}</p>
+                            {% if book.description %}
+                            <p class="book-desc">{{ book.description|truncatewords:25 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-msg">No books found for "{{ query }}".</p>
+        {% endif %}
+    {% else %}
+    <p class="empty-msg">Enter a search query above.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -113,6 +113,7 @@
                 .then(function (r) {
                     if (next && r.ok) {
                         state.inFavorites = true;
+                        if (typeof window.showToast === 'function') window.showToast('Added to favorites');
                     } else if (!next && r.status === 204) {
                         state.inFavorites = false;
                     }
@@ -134,6 +135,7 @@
                 .then(function (r) {
                     if (next && r.ok) {
                         state.inRead = true;
+                        if (typeof window.showToast === 'function') window.showToast('Marked as read');
                     } else if (!next && r.status === 204) {
                         state.inRead = false;
                     }

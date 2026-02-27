@@ -21,15 +21,15 @@
 </section>
 
 <div class="books-wrap">
-    {% if books %}
+    {% if page_obj.object_list %}
     <ul class="book-list">
-        {% for book in books %}
+        {% for book in page_obj.object_list %}
         <li>
             <a href="{% url 'book_detail' book.slug %}" class="book-card-link">
                 <div class="book-card">
                     {% if book.image %}
                     <div class="book-cover">
-                        <img src="{{ book.image.url }}" alt="{{ book.title }}" loading="lazy">
+                        <img src="{{ book.image.url }}" alt="{{ book.title }}" width="300" height="400" loading="lazy">
                     </div>
                     {% else %}
                     <div class="book-cover book-cover-placeholder">No cover</div>
@@ -46,6 +46,25 @@
         </li>
         {% endfor %}
     </ul>
+    {% if paginator.num_pages > 1 %}
+    <nav class="pagination" aria-label="Category pagination">
+        <ul class="pagination-list">
+            {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}" class="pagination-link pagination-prev">Previous</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li><span class="pagination-current" aria-current="page">{{ num }}</span></li>
+            {% else %}
+            <li><a href="?page={{ num }}" class="pagination-link">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}" class="pagination-link pagination-next">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
     {% else %}
     <p class="empty-msg">No books in this category yet.</p>
     {% endif %}

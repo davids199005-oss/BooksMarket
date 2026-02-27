@@ -14,14 +14,22 @@
 
     <section class="cabinet-section" id="favorites-section">
         <h2>Favorites</h2>
-        <div id="favorites-loading" class="cabinet-loading">Loading...</div>
+        <div id="favorites-loading" class="cabinet-loading cabinet-skeleton">
+            <div class="cabinet-skeleton-item"></div>
+            <div class="cabinet-skeleton-item"></div>
+            <div class="cabinet-skeleton-item"></div>
+        </div>
         <ul id="favorites-list" class="cabinet-list"></ul>
         <p id="favorites-empty" class="cabinet-empty">No favorite books yet. Add books from their pages.</p>
     </section>
 
     <section class="cabinet-section" id="read-section">
         <h2>Read books</h2>
-        <div id="read-loading" class="cabinet-loading">Loading...</div>
+        <div id="read-loading" class="cabinet-loading cabinet-skeleton">
+            <div class="cabinet-skeleton-item"></div>
+            <div class="cabinet-skeleton-item"></div>
+            <div class="cabinet-skeleton-item"></div>
+        </div>
         <ul id="read-list" class="cabinet-list"></ul>
         <p id="read-empty" class="cabinet-empty">No books marked as read yet.</p>
     </section>
@@ -35,8 +43,8 @@
     function buildBookUrl(slug) { return baseUrl + '/books/' + slug + '/'; }
 
     if (!token) {
-        document.getElementById('favorites-loading').textContent = '';
-        document.getElementById('read-loading').textContent = '';
+        document.getElementById('favorites-loading').classList.add('is-hidden');
+        document.getElementById('read-loading').classList.add('is-hidden');
         document.querySelector('.auth-subtitle').innerHTML = 'Please <a href="' + loginUrl + '">log in</a> to see your cabinet.';
         return;
     }

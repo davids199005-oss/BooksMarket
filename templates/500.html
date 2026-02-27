@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Server error — Code Nest{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/error.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container error-page">
+    <h1 class="error-page-title">500</h1>
+    <p class="error-page-text">Server error.</p>
+    <p class="error-page-text">Something went wrong. Please try again later.</p>
+    <a href="{% url 'home' %}" class="error-page-link">Back to home</a>
+</div>
+{% endblock %}

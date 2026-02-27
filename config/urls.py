@@ -10,6 +10,8 @@ urlpatterns = [
     path('api/', include('api.urls')),
 ]
 
+handler500 = 'books_market.views.handler500'
+
 
 
 if settings.DEBUG:

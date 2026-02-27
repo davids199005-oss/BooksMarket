@@ -1,9 +1,11 @@
 import os
 import mimetypes
+import json
 
 from django.shortcuts import render, get_object_or_404
 from django.http import FileResponse, Http404, HttpResponse
-from django.db.models import Count
+from django.db.models import Count, Q
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
 
@@ -38,15 +40,40 @@ def category_list(request):
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    books = Book.objects.filter(category=category).select_related('category', 'language')
-    return render(request, 'books_market/category_detail.html', {'category': category, 'books': books})
+    books_qs = Book.objects.filter(category=category).select_related('category', 'language').order_by('title')
+    paginator = Paginator(books_qs, 24)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'books_market/category_detail.html', {
+        'category': category,
+        'page_obj': page_obj,
+        'paginator': paginator,
+    })
 
 
 def book_detail(request, slug):
     book = get_object_or_404(Book.objects.select_related('category', 'language'), slug=slug)
+    related_books = (
+        Book.objects.filter(category=book.category)
+        .exclude(pk=book.pk)
+        .select_related('category', 'language')[:4]
+    )
+    image_url = None
+    if book.image:
+        image_url = request.build_absolute_uri(book.image.url)
+    json_ld = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": book.title,
+        "author": book.author,
+        "description": (book.description or "")[:500],
+        "image": image_url,
+    }, ensure_ascii=False)
     return render(request, 'books_market/book_detail.html', {
         'book': book,
         'user_can_access_file': request.user.is_authenticated,
+        'related_books': related_books,
+        'json_ld': json_ld,
     })
 
 
@@ -94,3 +121,26 @@ def welcome_page(request):
 
 def cabinet_page(request):
     return render(request, 'books_market/cabinet.html')
+
+
+SEARCH_RESULTS_LIMIT = 50
+
+
+def search_books(request):
+    q = (request.GET.get('q') or '').strip()
+    books = []
+    if q:
+        books = (
+            Book.objects.filter(
+                Q(title__icontains=q) | Q(author__icontains=q)
+            )
+            .select_related('category', 'language')[:SEARCH_RESULTS_LIMIT]
+        )
+    return render(request, 'books_market/search.html', {
+        'query': q,
+        'books': books,
+    })
+
+
+def handler500(request):
+    return render(request, '500.html', status=500)

@@ -2,8 +2,17 @@
 {% load static %}
 
 {% block title %}{{ book.title }} — Code Nest{% endblock %}
+{% block meta_description %}<meta name="description" content="{{ book.description|truncatewords:30|striptags|default:book.title }}">{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'books_market/css/book_detail.css' %}">
+{% endblock %}
+{% block extra_head %}
+<meta property="og:title" content="{{ book.title }}">
+<meta property="og:description" content="{{ book.description|truncatewords:30|striptags|default:book.title }}">
+<meta property="og:image" content="{% if book.image %}{{ request.scheme }}://{{ request.get_host }}{{ book.image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/favicon.png' %}{% endif %}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:type" content="book">
+<script type="application/ld+json">{{ json_ld|safe }}</script>
 {% endblock %}
 
 {% block content %}
@@ -26,7 +35,7 @@
         <div class="book-detail-cover-wrap">
             <div class="book-detail-cover">
                 {% if book.image %}
-                <img src="{{ book.image.url }}" alt="{{ book.title }}" loading="eager">
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" width="300" height="400" loading="eager">
                 {% else %}
                 <div class="book-cover-placeholder">
                     <svg class="icon icon--placeholder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -130,6 +139,33 @@
             <section class="book-detail-description" aria-labelledby="about-heading">
                 <h2 id="about-heading" class="book-detail-heading">About this book</h2>
                 <div class="book-detail-text">{{ book.description|linebreaks }}</div>
+            </section>
+            {% endif %}
+
+            {% if related_books %}
+            <section class="book-related" aria-labelledby="related-heading">
+                <h2 id="related-heading" class="book-detail-heading">More from this category</h2>
+                <ul class="book-related-list">
+                    {% for rel in related_books %}
+                    <li>
+                        <a href="{% url 'book_detail' rel.slug %}" class="book-card-link">
+                            <div class="book-card">
+                                {% if rel.image %}
+                                <div class="book-cover">
+                                    <img src="{{ rel.image.url }}" alt="{{ rel.title }}" width="300" height="400" loading="lazy">
+                                </div>
+                                {% else %}
+                                <div class="book-cover book-cover-placeholder">No cover</div>
+                                {% endif %}
+                                <div class="book-info">
+                                    <h3 class="book-title">{{ rel.title }}</h3>
+                                    <p class="book-author">{{ rel.author }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
             </section>
             {% endif %}
         </div>
