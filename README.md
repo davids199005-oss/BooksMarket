@@ -215,4 +215,4 @@ All API responses are JSON. Authenticated endpoints require header: `Authorizati
 
 ## License
 
-MIT. See repository for details.
+MIT. 
